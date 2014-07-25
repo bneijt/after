@@ -1,18 +1,18 @@
 module After where
 
-import System.INotify
 import Control.Concurrent
+import System.Directory
 
-justShowAndUnlock :: MVar String -> Event -> IO()
-justShowAndUnlock mvar event = do
-    putStrLn (show event)
-    putMVar mvar "Yep, this is happening"
+halfASecondInMicroseconds = 500000
 
 afterPid :: String -> IO ()
 afterPid pid = do
-    inotifyHandle <- initINotify
-    unockedAfter <- newEmptyMVar
-    watchHandle <- addWatch inotifyHandle [DeleteSelf, MoveSelf, OnlyDir] ("/proc/" ++ pid) (justShowAndUnlock unockedAfter)
-    seen <- takeMVar unockedAfter
-    putStrLn seen
+    fileExists <- doesDirectoryExist ("/proc/" ++ pid)
+    if fileExists
+    then do
+        threadDelay halfASecondInMicroseconds
+        afterPid pid
+    else return ()
+
+
 
