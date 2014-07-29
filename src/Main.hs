@@ -1,5 +1,6 @@
 import Control.Applicative
 import Options
+import Control.Concurrent.ParallelIO.Global (parallel_, stopGlobalPool)
 
 import After (afterPid)
 
@@ -16,5 +17,7 @@ main :: IO ()
 main = runCommand $ \opts args -> do
     if optQuiet opts
         then return ()
-        else afterPid (head args)
+        else do
+            parallel_ (map afterPid args)
+            stopGlobalPool
 
