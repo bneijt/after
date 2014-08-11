@@ -2,30 +2,28 @@ module After where
 
 import Control.Concurrent
 import System.Directory
-import Data.List (isInfixOf, delete)
+import Data.List (isInfixOf)
 import Process (psCmdLine, psListing)
 import System.Posix.Process (getProcessID)
-import Control.Monad (filterM)
+import Control.Monad (filterM, unless, when)
 
+halfASecondInMicroseconds :: Int
 halfASecondInMicroseconds = 500000
 
 waitForPid :: String -> IO ()
 waitForPid pid = do
     fileExists <- doesDirectoryExist ("/proc/" ++ pid)
-    if fileExists
-    then do
+    when fileExists $ do
         threadDelay halfASecondInMicroseconds
         waitForPid pid
-    else return ()
+
 
 
 -- afterPid will block until the given pid has exited
 afterPid :: String -> IO ()
 afterPid pid = do
     ownPid <- getProcessID
-    if pid == (show ownPid)
-    then return ()
-    else do
+    unless (pid == show ownPid) $ do
         cmdLine <- psCmdLine pid
         putStrLn $ "Waiting for " ++ pid ++ ": " ++ cmdLine
         waitForPid pid
