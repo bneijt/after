@@ -22,10 +22,13 @@ waitForPid pid = do
 -- afterPid will block until the given pid has exited
 afterPid :: String -> IO ()
 afterPid pid = do
-    cmdLine <- psCmdLine pid
-    putStrLn $ "Waiting for " ++ pid ++ ": " ++ cmdLine
-    waitForPid pid
-
+    ownPid <- getProcessID
+    if pid == (show ownPid)
+    then return ()
+    else do
+        cmdLine <- psCmdLine pid
+        putStrLn $ "Waiting for " ++ pid ++ ": " ++ cmdLine
+        waitForPid pid
 
 pidHasPartialCommand :: String -> String -> IO Bool
 pidHasPartialCommand needle pid = do
@@ -40,6 +43,4 @@ pidsWithPartialCommand cmdLine = do
 afterPartialCmdline :: String -> IO()
 afterPartialCmdline cmdLine = do
     pids <- pidsWithPartialCommand cmdLine
-    ownPid <- getProcessID
-    let otherPids = delete (show ownPid) pids
-    mapM_ afterPid otherPids
+    mapM_ afterPid pids
