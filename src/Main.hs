@@ -2,7 +2,7 @@ import Control.Applicative
 import Options
 import Control.Concurrent.ParallelIO.Global (parallel_, stopGlobalPool)
 
-import After (afterPid, afterPartialCmdline)
+import After (afterPartialCmdline)
 
 data MainOptions = MainOptions
     { optQuiet :: Bool
