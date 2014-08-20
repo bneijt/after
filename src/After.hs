@@ -1,4 +1,7 @@
 module After where
+-- This module defines blocking `-> IO()` functions
+-- which can be used to monitor for process termination.
+
 
 import Control.Concurrent
 import System.Directory
@@ -6,6 +9,7 @@ import Data.List (isInfixOf)
 import Process (psCmdLine, psListing)
 import System.Posix.Process (getProcessID)
 import Control.Monad (filterM, unless, when)
+import Control.Exception -- (try, SomeException)
 
 halfASecondInMicroseconds :: Int
 halfASecondInMicroseconds = 500000
@@ -30,8 +34,10 @@ afterPid pid = do
 
 pidHasPartialCommand :: String -> String -> IO Bool
 pidHasPartialCommand needle pid = do
-    cmd <- psCmdLine pid
-    return $ isInfixOf needle cmd
+    cmd <- try (psCmdLine pid) :: IO (Either IOException String)
+    case cmd of
+        Right x -> return $ isInfixOf needle x
+        Left _ -> return False
 
 pidsWithPartialCommand :: String -> IO [String]
 pidsWithPartialCommand cmdLine = do
