@@ -11,28 +11,36 @@ build-type:          Simple
 extra-source-files:  README
 cabal-version:       >=1.10
 
+library
+    build-depends:      base >=4.7 && <4.8,
+                        directory ==1.2.*,
+                        filepath ==1.3.*,
+                        unix ==2.7.*
+    hs-source-dirs:     src/lib
+    exposed-modules:    After,
+                        Process
+    ghc-options:        -Wall
+    default-language:   Haskell2010
+
 executable after
     main-is:            Main.hs
     build-depends:      base >=4.7 && <4.8,
-                        options ==1.*,
-                        directory ==1.2.*,
                         parallel-io ==0.3.*,
-                        filepath ==1.3.*,
-                        unix ==2.7.*
-    hs-source-dirs:     src
+                        options ==1.*,
+                        after
+    hs-source-dirs:     src/main
     ghc-options:        -Wall
     default-language:   Haskell2010
 
 
 test-suite afterTests
-    hs-source-dirs:    test src
+    hs-source-dirs:    src/test
     main-is:           AfterTest.hs
     type:              exitcode-stdio-1.0
     build-depends:     base >=4.7 && <4.8,
                        unix ==2.7.*,
-                       directory ==1.2.*,
-                       filepath ==1.3.*,
                        test-framework,
                        test-framework-hunit,
-                       HUnit
+                       HUnit,
+                       after
     default-language:  Haskell2010
