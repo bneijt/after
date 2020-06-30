@@ -92,7 +92,6 @@ fn main() {
         )
         .get_matches();
 
-    println!("{:?}", matches);
     match matches.values_of("PROC") {
         Some(arg_array) => {
             let match_words: Vec<String> = arg_array.map(|v| String::from(v)).collect();
