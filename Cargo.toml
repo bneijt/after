@@ -11,7 +11,6 @@ keywords = ["cli", "shell", "after"]
 categories = ["command-line-utilities"]
 
 [dependencies]
-                
 procfs = "*"
 clap = "2.33"
 libc = "*"
