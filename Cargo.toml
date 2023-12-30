@@ -12,5 +12,5 @@ categories = ["command-line-utilities"]
 
 [dependencies]
 procfs = "*"
-clap = "2.33"
+clap = "4"
 libc = "*"

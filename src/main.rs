@@ -16,7 +16,7 @@
 
 */
 
-use clap::{App, Arg};
+use clap::{Command, Arg};
 use libc::pid_t;
 use procfs::process::Process;
 use std;
@@ -81,18 +81,17 @@ fn select_pid(match_words: &Vec<String>, process_commandline: &ProcessCommandlin
 
 ///Main entrypoint for the commandline interface
 fn main() {
-    let matches = App::new("after")
+    let matches = Command::new("after")
         .version(env!("CARGO_PKG_VERSION"))
         .author(env!("CARGO_PKG_AUTHORS"))
         .about("Exit after other commands are done")
         .arg(
-            Arg::with_name("PROC")
+            Arg::new("PROC")
                 .help("Parts of the commandline of the process you want to wait for")
-                .multiple(true),
         )
         .get_matches();
 
-    match matches.values_of("PROC") {
+    match matches.get_many::<String>("PROC") {
         Some(arg_array) => {
             let match_words: Vec<String> = arg_array.map(|v| String::from(v)).collect();
 
